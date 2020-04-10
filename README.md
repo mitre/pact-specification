@@ -58,6 +58,19 @@ The following additional matchers are proposed:
 | nullValue | Matches NULL values only. This is used to provide matcher defintions like `or(decimal, nullValue)` | `{ "match": "nullValue" }` |
 | absent | Indicates an attribute that must never be present | `{ "match": "absent" }` |
 
+### Namespace-Aware XML Matching
+
+XML namespaces will be utilized when comparing nodes between XML documents.
+
+When an XML namespace is defined (e.g., `<prefix:local xmlns:prefix="urn:ns"/>`), 
+nodes will be compared by their namespace (e.g., `urn:ns`) and the local part of their name (e.g., `local`). Nodes using different
+XML namespace declarations/prefixes (e.g., `<foo xmlns="urn:ns"/>`, `<a:foo xmlns:a="urn:ns"/>`, `<b:foo xmlns:b="urn:ns"/>`) can match.
+
+When XML namespaces are not defined (e.g., `<prefix:local/>`), nodes will be compared by their full node name which includes both the local part
+and optional prefix (e.g., `prefix:local`). Un-namespaced nodes with different full node names (e.g., `<foo/>`, `<a:foo/>`, `<b:foo/>`) won't match.
+
+Nodes without an XML namespace (e.g., `<foo/>`) should not match nodes with an XML namespace (e.g., `<foo xmlns="urn:ns"/>`).
+
 ### Ignoring the keys in a map
 
 Some payloads may contain a map of IDs to values. In these cases, the keys should be ignored and only the values compared. This can be achieved by defining a new `mapValues` matcher on the map. For reference, see [#47](https://github.com/pact-foundation/pact-specification/issues/47) and [Pact-JVM #313](https://github.com/DiUS/pact-jvm/issues/313).
